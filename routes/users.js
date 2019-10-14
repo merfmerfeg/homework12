@@ -1,7 +1,6 @@
 const usersRoute = require('express').Router();
 const usersData = require('../data/users.json');
 
-
 usersRoute.get('/users', (req, res) => {
   res.send(usersData);
 });
