@@ -15,7 +15,7 @@ app.listen(PORT, () => {
 app.use(express.static('public'));
 app.use(cardsRoute);
 app.use(usersRoute);
-
+//
 app.get('/:page', (req, res) => {
   res.status(404);
   res.send({ message: 'Запрашиваемый ресурс не найден' });
