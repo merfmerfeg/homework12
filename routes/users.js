@@ -11,7 +11,7 @@ usersRoute.get('/users/:id', (req, res) => {
 
   if (!user) {
     res.status(404);
-    res.send({ error: 'Такого пользователя нет' });
+    res.send({ error: 'Нет пользователя с таким id' });
   } else {
     res.send(user);
   }
