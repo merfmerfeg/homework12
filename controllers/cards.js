@@ -18,7 +18,7 @@ module.exports.createCard = (req, res) => {
 
   Card.create(objCard)
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => res.status(422).send({ message: err.message }));
 };
 
 // Удалить карточку
