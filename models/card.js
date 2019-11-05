@@ -10,10 +10,9 @@ const cardSchema = new mongoose.Schema({
   },
   link: {
     type: String,
+    required: true,
     validate: {
-      validator(v) {
-        return helper.validateLink(v);
-      },
+      validator: (v) => helper.validateLink(v),
       message: (props) => `${props.value} некорректная ссылка на изображение`,
     },
   },

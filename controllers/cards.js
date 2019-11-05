@@ -1,9 +1,11 @@
+/* eslint-disable no-underscore-dangle */
 const Card = require('../models/card');
+const Helper = require('../helper');
 
 // Получить все карточки
 module.exports.getCards = (req, res) => {
   Card.find({})
-    .populate('user')
+    .populate('owner')
     .then((cards) => res.send({ data: cards }))
     .catch((err) => res.status(500).send({ message: err.message }));
 };
@@ -13,18 +15,29 @@ module.exports.createCard = (req, res) => {
   const objCard = {
     name: req.body.name,
     link: req.body.link,
-    owner: req.user.id,
+    owner: req.user._id,
   };
 
   Card.create(objCard)
     .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(422).send({ message: err.message }));
+    .catch((err) => res.status(Helper.getErrorNumber(err)).send({ message: err.message }));
 };
 
 // Удалить карточку
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.id)
-    .then((card) => res.send({ data: card }))
+  // Находим карточку, проверяем авторизирован ее хозяин или нет
+  Card.findById(req.params.id)
+    .populate('owner')
+    .then((card) => {
+      if (card.owner.id !== req.user._id) {
+        // Авторизирован не хозяин карточки
+        res.status(400).send({ message: 'Ошибка доступа' });
+      } else {
+        // Авторизирован хозяин, удаляем карточку
+        Card.findByIdAndRemove(req.params.id)
+          .then((cardData) => res.send({ data: cardData }));
+      }
+    })
     .catch((err) => res.status(500).send({ message: err.message }));
 };
 

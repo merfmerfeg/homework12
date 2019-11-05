@@ -9,6 +9,25 @@ const Helper = {
 
     return pattern.test(link);
   },
+  validateEmail: (email) => {
+    const pattern = new RegExp('[\\w-]+@[\\w-.]+.[a-zA-Z]{2,}$');
+    return pattern.test(email);
+  },
+  getErrorNumber: (err) => {
+    let errNumber;
+
+    // Ошибка валидации
+    if (err.name === 'ValidationError') {
+      errNumber = 422;
+    // Ошибка при обработке запроса в БД (одинаковые емэйл, например)
+    } else if (err.name === 'MongoError') {
+      errNumber = 400;
+    // Прочие ошибки
+    } else {
+      errNumber = 500;
+    }
+    return errNumber;
+  },
 };
 
 module.exports = Helper;
