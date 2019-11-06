@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
+    required: true,
     validate: {
       validator: (v) => helper.validateLink(v),
       message: (props) => `${props.value} некорректная ссылка на изображение`,

@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -6,7 +5,7 @@ const User = require('../models/user');
 const Helper = require('../helper');
 
 // Создать нового пользователя
-module.exports.createUser = (req, res) => {
+const createUser = (req, res) => {
   bcrypt.hash(req.body.password, 10)
     .then((hash) => User.create({
       name: req.body.name,
@@ -15,7 +14,7 @@ module.exports.createUser = (req, res) => {
       email: req.body.email,
       password: hash,
     }))
-    .then((user) => res.send({
+    .then((user) => res.status(201).res.send({
       name: user.name,
       about: user.about,
       avatar: user.avatar,
@@ -25,7 +24,7 @@ module.exports.createUser = (req, res) => {
 };
 
 // Логин пользователя
-module.exports.loginUser = (req, res) => {
+const loginUser = (req, res) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
@@ -37,4 +36,8 @@ module.exports.loginUser = (req, res) => {
     .catch((err) => {
       res.status(401).send({ message: err.message });
     });
+};
+
+module.exports = {
+  loginUser, createUser,
 };

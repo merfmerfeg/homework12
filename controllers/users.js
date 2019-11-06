@@ -3,21 +3,27 @@ const User = require('../models/user');
 const Helper = require('../helper');
 
 // Получить всех пользователей
-module.exports.getUsers = (req, res) => {
+const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
     .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 // Получить пользователя по id
-module.exports.getUserByID = (req, res) => {
+const getUserByID = (req, res) => {
   User.findById(req.params.id)
-    .then((user) => res.send({ data: user }))
+    .then((user) => {
+      if (user) {
+        res.send({ data: user });
+      } else {
+        res.status(400).send({ message: 'Пользователь с таким id не найден' });
+      }
+    })
     .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 // Обновить профиль пользователя
-module.exports.updateProfile = (req, res) => {
+const updateProfile = (req, res) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { name, about }, {
@@ -29,7 +35,7 @@ module.exports.updateProfile = (req, res) => {
 };
 
 // Обновить аватар пользователя
-module.exports.updateAvatar = (req, res) => {
+const updateAvatar = (req, res) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { avatar }, {
@@ -38,4 +44,8 @@ module.exports.updateAvatar = (req, res) => {
   })
     .then((user) => res.send({ data: user }))
     .catch((err) => res.status(Helper.getErrorNumber(err)).send({ message: err.message }));
+};
+
+module.exports = {
+  getUsers, getUserByID, updateProfile, updateAvatar,
 };

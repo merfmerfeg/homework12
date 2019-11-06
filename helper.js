@@ -18,7 +18,7 @@ const Helper = {
 
     // Ошибка валидации
     if (err.name === 'ValidationError') {
-      errNumber = 422;
+      errNumber = 400;
     // Ошибка при обработке запроса в БД (одинаковые емэйл, например)
     } else if (err.name === 'MongoError') {
       errNumber = 400;
