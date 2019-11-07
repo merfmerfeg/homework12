@@ -46,7 +46,7 @@ app.use(cardsRoute);
 app.use(usersRoute);
 
 
-app.get('/:page', (req, res) => {
+app.use('*', (req, res) => {
   res.status(404);
   res.send({ message: 'Запрашиваемый ресурс не найден' });
 });

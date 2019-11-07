@@ -18,7 +18,7 @@ const createCard = (req, res) => {
   };
 
   Card.create(objCard)
-    .then((card) => res.status(201).res.send({ data: card }))
+    .then((card) => res.status(201).send({ data: card }))
     .catch((err) => res.status(Helper.getErrorNumber(err)).send({ message: err.message }));
 };
 
