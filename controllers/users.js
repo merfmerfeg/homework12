@@ -1,29 +1,29 @@
 /* eslint-disable no-underscore-dangle */
 const User = require('../models/user');
-const Helper = require('../helper');
+const NotFoundError = require('../errors/not-found-error');
 
 // Получить всех пользователей
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch(next);
 };
 
 // Получить пользователя по id
-const getUserByID = (req, res) => {
+const getUserByID = (req, res, next) => {
   User.findById(req.params.id)
     .then((user) => {
       if (user) {
         res.send({ data: user });
       } else {
-        res.status(400).send({ message: 'Пользователь с таким id не найден' });
+        throw new NotFoundError('Пользователь с таким id не найден');
       }
     })
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch(next);
 };
 
 // Обновить профиль пользователя
-const updateProfile = (req, res) => {
+const updateProfile = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { name, about }, {
@@ -31,11 +31,11 @@ const updateProfile = (req, res) => {
     runValidators: true, // данные будут валидированы перед изменением
   })
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(Helper.getErrorNumber(err)).send({ message: err.message }));
+    .catch(next);
 };
 
 // Обновить аватар пользователя
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { avatar }, {
@@ -43,7 +43,7 @@ const updateAvatar = (req, res) => {
     runValidators: true, // данные будут валидированы перед изменением
   })
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(Helper.getErrorNumber(err)).send({ message: err.message }));
+    .catch(next);
 };
 
 module.exports = {
