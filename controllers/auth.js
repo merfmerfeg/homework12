@@ -1,8 +1,11 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const User = require('../models/user');
 const AutorizationError = require('../errors/autorization-error');
+
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 // Создать нового пользователя
 const createUser = (req, res, next) => {
@@ -34,7 +37,9 @@ const loginUser = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       res.send({
-        token: jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' }),
+        token: jwt.sign({ _id: user._id },
+          (NODE_ENV === 'production') ? JWT_SECRET : 'super-strong-secret',
+          { expiresIn: '7d' }),
       });
     })
     .catch(() => {

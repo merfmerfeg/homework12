@@ -44,6 +44,13 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 // логгер запросов
 app.use(requestLogger);
 
+// для тестов падения
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+
 // Авторизация не требуется
 app.use(userAuth);
 
