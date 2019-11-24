@@ -1,4 +1,11 @@
 const jwt = require('jsonwebtoken');
+const path = require('path');
+
+const ENV_NAME = 'conf.env';
+require('dotenv').config({ path: path.resolve(process.cwd(), ENV_NAME) });
+
+const { NODE_ENV, JWT_SECRET } = process.env;
+
 const AutorizationError = require('../errors/autorization-error');
 
 const extractBearerToken = (header) => header.replace('Bearer ', '');
@@ -15,7 +22,7 @@ module.exports = (req, res, next) => {
   let payload;
 
   try {
-    payload = jwt.verify(token, 'super-strong-secret');
+    payload = jwt.verify(token, (NODE_ENV === 'production') ? JWT_SECRET : 'super-strong-secret');
   } catch (err) {
     next(new AutorizationError());
   }

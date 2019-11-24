@@ -1,6 +1,9 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const path = require('path');
+
+const ENV_NAME = 'conf.env';
+require('dotenv').config({ path: path.resolve(process.cwd(), ENV_NAME) });
 
 const User = require('../models/user');
 const AutorizationError = require('../errors/autorization-error');
